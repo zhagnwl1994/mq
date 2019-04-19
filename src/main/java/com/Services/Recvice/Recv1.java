@@ -14,18 +14,30 @@ public class Recv1 {
 
         Channel channel = connection.createChannel();
         //声明队列
-        channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        //每次只接收一条消息
+        channel.basicQos(1);
         DefaultConsumer defaultConsumer = new DefaultConsumer(channel) {
 
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                  String delivery = new String(body);
+                String delivery = new String(body);
                 System.out.println("[1]:"+delivery);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //手动回执
+                System.out.println("[1]envelope.getDeliveryTag():"+envelope.getDeliveryTag());
+                channel.basicAck(envelope.getDeliveryTag(),false);
             }
         };
 
+        //关闭自动应答
+        boolean autoAck = false;
         // 监听队列
-        channel.basicConsume(QUEUE_NAME,true,defaultConsumer);
+        channel.basicConsume(QUEUE_NAME,autoAck,defaultConsumer);
     }
 }

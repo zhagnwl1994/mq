@@ -1,4 +1,4 @@
-package com.Services.Recvice;
+package com.Services.exchange;
 
 import com.Utils.ConnectUtils;
 import com.rabbitmq.client.*;
@@ -6,36 +6,37 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class Recv2 {
-    private static final String QUEUE_NAME = "test_simple_queue";
-
+public class recvexch1 {
+    private static String EXCHANGE_ANME=  "test_exchange";
+    private static String QUEUE_NAME = "TEST_EXCHANGE";
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = ConnectUtils.getConnection();
-
         Channel channel = connection.createChannel();
-        //声明队列
-        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-        //每次只接收一条消息
-        channel.basicQos(1);
-        DefaultConsumer defaultConsumer = new DefaultConsumer(channel) {
 
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        //将队列绑定到交换机
+        channel.queueBind(QUEUE_NAME,EXCHANGE_ANME,"") ;
+
+        channel.basicQos(1);
+
+        DefaultConsumer defaultConsumer = new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                  String delivery = new String(body);
-                System.out.println("[2]:"+delivery);
+                String msg = new String(body);
+                System.out.println("exchange[1]:" + msg);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("[2]envelope.getDeliveryTag();"+envelope.getDeliveryTag());
                 //手动回执
                 channel.basicAck(envelope.getDeliveryTag(),false);
             }
         };
-        //关闭自动应答
-        boolean autoAck = false;
-        // 监听队列
-        channel.basicConsume(QUEUE_NAME,autoAck,defaultConsumer);
+
+        //监听队列
+        //设置autoAck = false, 关闭自定应答
+        channel.basicConsume(QUEUE_NAME,false,defaultConsumer);
+
     }
 }
