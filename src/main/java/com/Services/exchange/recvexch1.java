@@ -8,15 +8,15 @@ import java.util.concurrent.TimeoutException;
 
 public class recvexch1 {
     private static String EXCHANGE_ANME=  "test_exchange";
-    private static String QUEUE_NAME = "TEST_EXCHANGE";
+    private static String QUEUE_NAME = "TEST_EXCHANGE1";
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = ConnectUtils.getConnection();
         Channel channel = connection.createChannel();
-
+        //声明队列
         channel.queueDeclare(QUEUE_NAME, true, false, false, null);
         //将队列绑定到交换机
         channel.queueBind(QUEUE_NAME,EXCHANGE_ANME,"") ;
-
+        //向同一个消费者,每次只发送一条数据
         channel.basicQos(1);
 
         DefaultConsumer defaultConsumer = new DefaultConsumer(channel) {

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class Recv2 {
-    private static final String QUEUE_NAME = "test_simple_queue";
+    private static final String QUEUE_NAME = "test_simple_queue2";
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = ConnectUtils.getConnection();

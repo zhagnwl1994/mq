@@ -8,6 +8,9 @@ import com.rabbitmq.client.MessageProperties;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * 消息訂閱模式F
+ */
 public class SendMsg {
     private static final String QUEUE_NAME="test_simple_queue";
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
