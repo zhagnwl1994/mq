@@ -14,6 +14,7 @@ public class Recv2 {
     public static void main(String[] args) throws IOException, TimeoutException {
         Connection connection = ConnectUtils.getConnection();
 
+
         Channel channel = connection.createChannel();
 
         channel.queueDeclare(QUEUE_ANME,false,false,false,null);

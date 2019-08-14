@@ -29,7 +29,6 @@ public class Recv1 {
 
                 System.out.println(new String(body));
                 //手动回执
-
                 channel.basicAck(envelope.getDeliveryTag(),false);
 
             }
